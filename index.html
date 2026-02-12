@@ -374,17 +374,40 @@
 
     // Move NO anywhere on screen
     function moveNoButton(){
-      const wrapRect = noWrap.getBoundingClientRect();
-      const pad = 12;
+  const wrapRect = noWrap.getBoundingClientRect();
+  const pad = 12;
 
-      noWrap.style.position = "fixed";
+  // If not already fixed, lock it in place first
+  if (noWrap.style.position !== "fixed") {
+    noWrap.style.position = "fixed";
+    noWrap.style.left = wrapRect.left + "px";
+    noWrap.style.top  = wrapRect.top  + "px";
+  }
 
-      const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
-      const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
+  // Current position
+  const currentLeft = parseFloat(noWrap.style.left);
+  const currentTop  = parseFloat(noWrap.style.top);
 
-      noWrap.style.left = rand(pad, Math.floor(maxLeft)) + "px";
-      noWrap.style.top  = rand(pad, Math.floor(maxTop))  + "px";
-    }
+  // Small jump range (adjust if you want more/less movement)
+  const maxStep = 100; 
+  const dx = (Math.random() * maxStep * 2) - maxStep; // -100 to +100
+  const dy = (Math.random() * maxStep * 2) - maxStep;
+
+  // Screen limits
+  const maxLeft = window.innerWidth  - wrapRect.width  - pad;
+  const maxTop  = window.innerHeight - wrapRect.height - pad;
+
+  // Clamp inside bounds
+  let newLeft = currentLeft + dx;
+  let newTop  = currentTop + dy;
+
+  newLeft = Math.max(pad, Math.min(newLeft, maxLeft));
+  newTop  = Math.max(pad, Math.min(newTop, maxTop));
+
+  noWrap.style.left = newLeft + "px";
+  noWrap.style.top  = newTop  + "px";
+}
+
 
     // ✅ Avoid only when avoidMode is ON (we will turn it ON later)
     function setAvoidOnHover(){
