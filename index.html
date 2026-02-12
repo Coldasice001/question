@@ -96,7 +96,6 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    /* make this paragraph black */
     .sub{
       margin: 0 auto 18px;
       width:min(520px, 95%);
@@ -135,9 +134,9 @@
     }
     #yesBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-    /* No button container that can move around */
+    /* No button container */
     #noWrap{
-      position: relative;
+      position: relative; /* stays in row by default */
       display:inline-block;
       z-index: 10000;
     }
@@ -178,7 +177,6 @@
 
     .hidden{ display:none !important; }
 
-    /* small screens */
     @media (max-width:420px){
       button{ width: 140px; }
       .btnRow{ gap: 12px; }
@@ -222,7 +220,6 @@
       line-height: 1.45;
     }
 
-    /* Intro buttons row */
     .introBtns{
       display:flex;
       justify-content:center;
@@ -243,7 +240,7 @@
     }
     #startBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-    /* IDC button that dodges immediately */
+    /* IDC button (intro) */
     #idcWrap{
       position: relative;
       display:inline-block;
@@ -262,7 +259,6 @@
 </head>
 <body>
 
-  <!-- floating hearts -->
   <div class="hearts" id="hearts"></div>
 
   <!-- INTRO OVERLAY -->
@@ -273,7 +269,6 @@
         I have a tiny question for you… 💖<br/>
       </p>
 
-      <!-- ✅ UPDATED: added IDC button that avoids immediately -->
       <div class="introBtns">
         <button id="startBtn">YES 😳💖</button>
 
@@ -307,7 +302,7 @@
   </div>
 
   <script>
-    // ===== Floating hearts generator =====
+    // ===== Floating hearts =====
     const heartsEl = document.getElementById("hearts");
     const heartChars = ["💗","💖","💘","💕","💞","💝","❤️","🩷","✨"];
     function spawnHeart(){
@@ -324,6 +319,11 @@
     for(let i=0;i<18;i++) spawnHeart();
     setInterval(spawnHeart, 550);
 
+    // ===== Helpers =====
+    function rand(min, max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+
     // ===== Intro logic =====
     const introOverlay = document.getElementById("introOverlay");
     const startBtn = document.getElementById("startBtn");
@@ -338,43 +338,23 @@
     const idcWrap = document.getElementById("idcWrap");
     const idcBtn  = document.getElementById("idcBtn");
 
-    function rand(min, max){
-      return Math.floor(Math.random()*(max-min+1))+min;
-    }
-
     function moveIDCButton(){
       const wrapRect = idcWrap.getBoundingClientRect();
       const pad = 12;
 
-      // float anywhere on the screen
       idcWrap.style.position = "fixed";
 
       const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
       const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
 
-      const left = rand(pad, Math.floor(maxLeft));
-      const top  = rand(pad, Math.floor(maxTop));
-
-      idcWrap.style.left = left + "px";
-      idcWrap.style.top  = top  + "px";
+      idcWrap.style.left = rand(pad, Math.floor(maxLeft)) + "px";
+      idcWrap.style.top  = rand(pad, Math.floor(maxTop))  + "px";
     }
 
-    // dodge as soon as user tries to reach it
-    function setIDCImmediateAvoid(){
-      idcWrap.addEventListener("mouseenter", moveIDCButton);
-      idcBtn.addEventListener("mouseenter", moveIDCButton);
-
-      idcBtn.addEventListener("touchstart", (e) => {
-        moveIDCButton();
-      }, {passive:true});
-
-      // if they somehow click it, still dodge
-      idcBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        moveIDCButton();
-      });
-    }
-    setIDCImmediateAvoid();
+    idcWrap.addEventListener("mouseenter", moveIDCButton);
+    idcBtn.addEventListener("mouseenter", moveIDCButton);
+    idcBtn.addEventListener("touchstart", () => moveIDCButton(), {passive:true});
+    idcBtn.addEventListener("click", (e) => { e.preventDefault(); moveIDCButton(); });
 
     // ===== Main logic =====
     const yesBtn = document.getElementById("yesBtn");
@@ -385,31 +365,28 @@
     const sub = document.getElementById("sub");
 
     let noClicks = 0;
-    let avoidMode = false;
+    let avoidMode = false; // when true, NO avoids on hover/touch
 
     function showMessage(html){
       msgBox.innerHTML = html;
       msgBox.style.display = "block";
     }
 
-    // jump anywhere on the SCREEN (viewport) and never go out of bounds
+    // Move NO anywhere on screen
     function moveNoButton(){
       const wrapRect = noWrap.getBoundingClientRect();
       const pad = 12;
 
-      // Make it float anywhere on the screen
       noWrap.style.position = "fixed";
 
       const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
       const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
 
-      const left = rand(pad, Math.floor(maxLeft));
-      const top  = rand(pad, Math.floor(maxTop));
-
-      noWrap.style.left = left + "px";
-      noWrap.style.top  = top  + "px";
+      noWrap.style.left = rand(pad, Math.floor(maxLeft)) + "px";
+      noWrap.style.top  = rand(pad, Math.floor(maxTop))  + "px";
     }
 
+    // ✅ Avoid only when avoidMode is ON (we will turn it ON later)
     function setAvoidOnHover(){
       noWrap.addEventListener("mouseenter", () => {
         if(avoidMode) moveNoButton();
@@ -423,7 +400,10 @@
     }
     setAvoidOnHover();
 
-    // NO click behavior
+    // ✅ NEW BEHAVIOR:
+    // 1st click -> "oh" (no move)
+    // 2nd click -> "just say you hate me" (NO STILL DOES NOT MOVE)
+    // 3rd time trying -> avoid starts (it will jump away like the intro IDC)
     noBtn.addEventListener("click", () => {
       noClicks++;
 
@@ -435,35 +415,33 @@
             <span style="opacity:.95;">dabri 7alek</span>
           </div>
         `);
+        return;
       }
 
-      if(noClicks === 2 || noClicks === 3){
-        avoidMode = true;
+      if(noClicks === 2){
+        // ✅ show message but DO NOT enable avoid and DO NOT move
         showMessage(`
           <div style="font-size:22px; font-weight:900;">just say you hate me</div>
           <div style="margin-top:10px; opacity:.95;">
             Try again… if you can 😈💞
           </div>
         `);
-        moveNoButton();
+        return;
       }
 
-      if(noClicks === 4){
-        avoidMode = true;
-        showMessage(`
-          <div style="font-size:26px; font-weight:900;">just say you hate me 😭</div>
-          <div style="margin-top:10px; opacity:.95;">(the NO button will not cooperate anymore)</div>
-        `);
-        moveNoButton();
-      }
+      // ✅ from 3rd click onward: start avoiding (and jump immediately too)
+      avoidMode = true;
 
-      if(noClicks >= 5){
-        avoidMode = true;
-        moveNoButton();
-      }
+      showMessage(`
+        <div style="font-size:26px; font-weight:900;">just say you hate me 😭</div>
+        <div style="margin-top:10px; opacity:.95;">(the NO button will not cooperate anymore)</div>
+      `);
+
+      // jump away immediately after they manage to click it
+      moveNoButton();
     });
 
-    // YES click behavior
+    // YES click
     yesBtn.addEventListener("click", () => {
       avoidMode = false;
 
@@ -499,7 +477,6 @@
 
     window.addEventListener("resize", () => {
       if(avoidMode) moveNoButton();
-      // keep IDC within bounds too
       moveIDCButton();
     });
   </script>
