@@ -1,379 +1,355 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Valentine 💘</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Be My Valentine 💘</title>
   <style>
     :root{
-      --card: rgba(255, 255, 255, .78);
-      --cardBorder: rgba(255, 110, 150, .35);
-      --shadow: 0 18px 50px rgba(0,0,0,.18);
-      --text: #1f1f1f;
-      --muted: rgba(31,31,31,.72);
-      --yes1: #ff2f73;
-      --yes2: #ff6aa2;
-      --noBg: rgba(255,255,255,.86);
+      --glass: rgba(255,255,255,.18);
+      --glass2: rgba(255,255,255,.28);
+      --stroke: rgba(255,255,255,.35);
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
     }
 
-    *{ box-sizing:border-box; }
-    html, body{ height:100%; }
-
+    *{ box-sizing: border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-    }
-
-    /* Background image */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background: url("background.jpg") center / cover no-repeat;
-      filter: blur(2.5px) brightness(.95) saturate(1.05);
-      transform: scale(1.03);
-      z-index:-2;
-    }
-
-    /* Soft tint overlay so text stays readable */
-    body::after{
-      content:"";
-      position:fixed;
-      inset:0;
-      background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.65), rgba(255,214,226,.20) 55%, rgba(255,255,255,.20));
-      z-index:-1;
-    }
-
-    /* floating mini-hearts */
-    .floaters{
-      position:fixed; inset:0;
-      pointer-events:none;
-      z-index:0;
-      opacity:.5;
-    }
-    .floaters span{
-      position:absolute;
-      bottom:-12vh;
-      font-size: clamp(14px, 2.2vw, 26px);
-      animation: up linear infinite;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
-    }
-    @keyframes up{
-      0%{ transform: translateY(0) rotate(0deg); opacity:0; }
-      12%{ opacity:1; }
-      100%{ transform: translateY(-125vh) rotate(360deg); opacity:0; }
-    }
-
-    .wrap{
-      width:min(720px, 92vw);
-      padding: 28px 22px;
-      position:relative;
-      z-index:1;
-    }
-
-    .card{
-      background: var(--card);
-      border: 1px solid var(--cardBorder);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      padding: 26px 18px 22px;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .topline{
+      min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
-      margin-bottom: 6px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow:hidden;
+
+      /* Background image from your repo (space in filename handled) */
+      background:
+        radial-gradient(1200px 800px at 20% 20%, rgba(255,0,150,.35), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%),
+        radial-gradient(700px 700px at 60% 90%, rgba(255,255,0,.18), transparent 55%),
+        url("Red%20Zone.jpg") center/cover no-repeat fixed;
     }
+
+    /* floating hearts background */
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.85;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
+    }
+
+    .heart{
+      position:absolute;
+      font-size: clamp(16px, 2.6vw, 30px);
+      animation: floatUp linear infinite;
+      transform: translateY(110vh);
+      opacity: .9;
+    }
+    @keyframes floatUp{
+      0%{ transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%{ opacity: .95; }
+      100%{ transform: translateY(-25vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Main card */
+    .card{
+      position:relative;
+      width:min(720px, 92vw);
+      padding: 34px 26px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--glass), rgba(255,255,255,.10));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align:center;
+    }
+
     .badge{
-      font-size: 13px;
-      padding: 6px 10px;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
       border-radius: 999px;
-      background: rgba(255, 47, 115, .12);
-      border: 1px solid rgba(255, 47, 115, .22);
-      color: rgba(110, 0, 35, .9);
+      background: linear-gradient(90deg, rgba(255,0,140,.35), rgba(0,255,255,.28), rgba(255,255,0,.22));
+      border: 1px solid rgba(255,255,255,.30);
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-shadow: 0 6px 18px rgba(0,0,0,.35);
     }
 
     h1{
-      margin: 0 0 8px;
-      font-size: clamp(30px, 4.8vw, 48px);
-      letter-spacing:.2px;
-    }
-    p{
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.35;
+      margin: 16px 0 8px;
+      font-size: clamp(28px, 4.5vw, 54px);
+      color: #fff;
+      line-height: 1.05;
+      text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    .stage{
-      margin: 10px auto 4px;
-      width: min(560px, 100%);
-      height: 160px;
-      position: relative;
-      display:grid;
-      place-items:center;
-      border-radius: 18px;
-      border: 1px dashed rgba(255, 110, 150, .35);
-      background: rgba(255,255,255,.35);
+    .sub{
+      margin: 0 auto 18px;
+      width:min(520px, 95%);
+      font-size: clamp(15px, 2.1vw, 18px);
+      color: rgba(255,255,255,.92);
+      line-height: 1.45;
+      text-shadow: 0 8px 22px rgba(0,0,0,.38);
     }
 
-    .btns{
+    .btnRow{
       display:flex;
-      gap: 14px;
-      align-items:center;
       justify-content:center;
-      flex-wrap:wrap;
-      position:relative;
-      z-index:2;
+      align-items:center;
+      gap: 16px;
+      margin-top: 20px;
+      position: relative;
+      min-height: 90px;
     }
 
     button{
       border:0;
-      border-radius: 16px;
-      padding: 12px 18px;
-      font-size: 18px;
       cursor:pointer;
+      font-weight: 800;
+      letter-spacing:.3px;
+      padding: 14px 22px;
+      border-radius: 16px;
+      font-size: 18px;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
       user-select:none;
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-    }
-    button:active{ transform: translateY(1px) scale(.99); }
-
-    #yesButton{
-      color:white;
-      background: linear-gradient(135deg, var(--yes1), var(--yes2));
-      box-shadow: 0 14px 26px rgba(255, 47, 115, .25);
-    }
-    #yesButton:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 18px 34px rgba(255, 47, 115, .32);
-      filter: brightness(1.03);
     }
 
-    #noButton{
-      background: var(--noBg);
-      box-shadow: 0 14px 26px rgba(0,0,0,.12);
-      position:absolute;
-      left: 50%;
-      top: 60%;
-      transform: translate(-50%, -50%);
+    #yesBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #ff2aa8, #ff7b2f, #ffd000);
+      box-shadow: 0 12px 28px rgba(255, 70, 170, .35);
     }
-    #noButton:hover{
-      transform: translate(-50%, -52%) scale(1.02);
+    #yesBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+
+    /* No button container that can move around */
+    #noWrap{
+      position: relative;
+      display:inline-block;
+    }
+    #noBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #6a5cff, #2ad4ff);
+      box-shadow: 0 12px 28px rgba(80, 190, 255, .28);
+    }
+    #noBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+
+    /* Message box */
+    .message{
+      margin: 20px auto 0;
+      width: min(620px, 96%);
+      padding: 18px 16px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(0,0,0,.28), rgba(255,255,255,.10));
+      border: 1px solid rgba(255,255,255,.28);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      color:#fff;
+      display:none;
+      text-shadow: 0 8px 22px rgba(0,0,0,.38);
+    }
+    .message.big{
+      padding: 22px 18px;
+      font-size: clamp(16px, 2.4vw, 20px);
+      line-height: 1.35;
     }
 
-    .hint{
-      margin-top:10px;
-      min-height: 22px;
-      font-size: 14px;
-      color: rgba(31,31,31,.68);
+    /* Success state */
+    .successGlow{
+      box-shadow:
+        0 18px 60px rgba(0,0,0,.35),
+        0 0 0 2px rgba(255,255,255,.18),
+        0 0 80px rgba(255, 0, 150, .25),
+        0 0 90px rgba(0, 255, 255, .18);
     }
 
-    /* toast messages (nice pop-outs) */
-    .toast{
-      position:absolute;
-      left:50%;
-      top:14px;
-      transform: translateX(-50%) translateY(-6px);
-      background: rgba(20, 20, 20, .86);
-      color:white;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 14px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
-      max-width: 92%;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      box-shadow: 0 18px 40px rgba(0,0,0,.25);
-    }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .hidden{ display:none !important; }
 
-    /* confetti hearts */
-    .confetti{
-      position:fixed;
-      top:-10vh;
-      pointer-events:none;
-      animation: fall 2.3s linear forwards;
-      will-change: transform, top, opacity;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
-      z-index:2;
-    }
-    @keyframes fall{
-      to{
-        top:110vh;
-        opacity:0;
-        transform: translateX(var(--dx)) rotate(var(--rot));
-      }
-    }
-
-    .footer{
-      margin-top: 14px;
-      font-size: 12px;
-      color: rgba(31,31,31,.55);
+    /* small screens */
+    @media (max-width:420px){
+      button{ width: 140px; }
+      .btnRow{ gap: 12px; }
     }
   </style>
 </head>
-
 <body>
-  <div class="floaters" id="floaters" aria-hidden="true"></div>
 
-  <div class="wrap">
-    <div class="card">
-      <div class="toast" id="toast"></div>
+  <!-- floating hearts -->
+  <div class="hearts" id="hearts"></div>
 
-      <div class="topline">
-        <span class="badge">💌 little message for you</span>
-      </div>
+  <div class="card" id="card">
+    <div class="badge">💌 Valentine Proposal ✨</div>
+    <h1 id="title">Will you be my Valentine? 💘</h1>
+    <p class="sub" id="sub">
+      I made this little page just for you 😭💖<br/>
+      Click wisely… (the “No” button is suspicious 👀)
+    </p>
 
-      <h1>Be my Valentine? 💘</h1>
-      <p id="subtitle">I made this page just to ask you one thing…</p>
+    <div class="btnRow" id="btnRow">
+      <button id="yesBtn">YES 💖</button>
 
-      <div class="stage" id="stage">
-        <div class="btns">
-          <button id="yesButton">Yes</button>
-          <button id="noButton">No</button>
-        </div>
-      </div>
-
-      <div class="hint" id="hint"></div>
-      <div class="footer">Made with love 🫶</div>
+      <span id="noWrap">
+        <button id="noBtn">NO 🙃</button>
+      </span>
     </div>
+
+    <div class="message big" id="msgBox"></div>
   </div>
 
   <script>
-    // ====== Customize your messages here ======
-    const TEXT = {
-      firstNo: "ohhhh 💔💔💔💔💔💔💔",
-      fourthNo: "y3ni ma bthbini?",
-      yes: "SUIIIIIIII, i love you my princess ❤️"
-    };
+    // ===== Floating hearts generator =====
+    const heartsEl = document.getElementById("hearts");
+    const heartChars = ["💗","💖","💘","💕","💞","💝","❤️","🩷","✨"];
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      h.style.left = Math.random()*100 + "vw";
+      h.style.animationDuration = (5 + Math.random()*6) + "s";
+      h.style.animationDelay = (Math.random()*1.5) + "s";
+      h.style.opacity = (0.5 + Math.random()*0.5).toFixed(2);
+      heartsEl.appendChild(h);
+      setTimeout(() => h.remove(), 12000);
+    }
+    for(let i=0;i<18;i++) spawnHeart();
+    setInterval(spawnHeart, 550);
 
-    // ====== Floating background hearts ======
-    const floaters = document.getElementById("floaters");
-    const hearts = ["💖","💘","💕","💞","❤️","🌸"];
-    function rand(min, max){ return Math.random() * (max - min) + min; }
-    for(let i=0;i<16;i++){
-      const s = document.createElement("span");
-      s.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-      s.style.left = rand(0, 100) + "vw";
-      s.style.animationDuration = rand(7, 14) + "s";
-      s.style.animationDelay = rand(0, 8) + "s";
-      s.style.opacity = rand(0.18, 0.55);
-      floaters.appendChild(s);
+    // ===== Main logic =====
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const noWrap = document.getElementById("noWrap");
+    const msgBox = document.getElementById("msgBox");
+    const title = document.getElementById("title");
+    const sub = document.getElementById("sub");
+    const card = document.getElementById("card");
+
+    let noClicks = 0;
+    let avoidMode = false; // when true, NO button runs away
+
+    function showMessage(html){
+      msgBox.innerHTML = html;
+      msgBox.style.display = "block";
     }
 
-    // ====== Toast (nice pop-out) ======
-    const toastEl = document.getElementById("toast");
-    let toastTimer = null;
-    function toast(msg){
-      clearTimeout(toastTimer);
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1500);
+    function rand(min, max){
+      return Math.floor(Math.random()*(max-min+1))+min;
     }
 
-    // ====== Main logic ======
-    let noClickCount = 0;
+    // Moves the NO button wrapper to a new random position within the card
+    function moveNoButton(){
+      const cardRect = card.getBoundingClientRect();
+      const wrapRect = noWrap.getBoundingClientRect();
 
-    const stage = document.getElementById("stage");
-    const noButton = document.getElementById("noButton");
-    const yesButton = document.getElementById("yesButton");
-    const subtitle = document.getElementById("subtitle");
-    const hint = document.getElementById("hint");
+      // safe padding from edges
+      const pad = 20;
 
-    function centerNo(){
-      noButton.style.left = "50%";
-      noButton.style.top  = "60%";
-      noButton.style.transform = "translate(-50%, -50%)";
-    }
-    centerNo();
+      // max left/top relative to card
+      const maxLeft = Math.max(pad, cardRect.width - wrapRect.width - pad);
+      const maxTop  = Math.max(pad, 140); // keep inside lower area
 
-    function moveNo(){
-      const stageRect = stage.getBoundingClientRect();
-      const btnRect = noButton.getBoundingClientRect();
-      const pad = 10;
+      const newLeft = rand(pad, Math.floor(maxLeft));
+      const newTop  = rand(90, Math.floor(cardRect.height - wrapRect.height - pad));
 
-      const maxX = stageRect.width  - btnRect.width  - pad*2;
-      const maxY = stageRect.height - btnRect.height - pad*2;
-
-      const x = pad + Math.max(0, Math.floor(Math.random() * maxX));
-      const y = pad + Math.max(0, Math.floor(Math.random() * maxY));
-
-      noButton.style.left = x + "px";
-      noButton.style.top  = y + "px";
-      noButton.style.transform = "translate(0,0)";
+      noWrap.style.position = "absolute";
+      noWrap.style.left = newLeft + "px";
+      noWrap.style.top  = newTop + "px";
     }
 
-    // Click behavior
-    noButton.addEventListener("click", () => {
-      noClickCount++;
+    function setAvoidOnHover(){
+      // When avoidMode is on, the NO button moves away when hovered / approached
+      noWrap.addEventListener("mouseenter", () => {
+        if(avoidMode) moveNoButton();
+      });
+      noBtn.addEventListener("mouseenter", () => {
+        if(avoidMode) moveNoButton();
+      });
+      // On touch devices, a tap may trigger it; still move
+      noBtn.addEventListener("touchstart", () => {
+        if(avoidMode) moveNoButton();
+      }, {passive:true});
+    }
+    setAvoidOnHover();
 
-      if (noClickCount === 1){
-        toast(TEXT.firstNo);
-        hint.textContent = "😳 are you sure about that...";
-        // tiny playful wobble
-        noButton.style.transition = "transform .08s ease";
-        noButton.style.transform = "translate(-50%, -50%) rotate(-2deg)";
-        setTimeout(centerNo, 100);
-        return;
+    // NO click behavior:
+    // 1st click: big message "ohhhhh" + 7 broken hearts + invalid operation + dabri 7alek
+    // 2nd & 3rd: button starts avoiding
+    // 4th click: "just say you hate me"
+    // >=5: always avoid (no more actual clicks easily)
+    noBtn.addEventListener("click", () => {
+      noClicks++;
+
+      if(noClicks === 1){
+        showMessage(`
+          <div style="font-size:26px; font-weight:900;">ohhhhh 💔💔💔💔💔💔💔</div>
+          <div style="margin-top:10px; font-size:18px;">
+            <b>Invalid operation</b> 😭<br/>
+            <span style="opacity:.95;">dabri 7alek</span>
+          </div>
+        `);
       }
 
-      if (noClickCount === 4){
-        toast(TEXT.fourthNo);
-        hint.textContent = "Nope 😅 you can’t press No anymore";
-        moveNo(); // IMPORTANT: still moves on 4th click ✅
-        return;
+      if(noClicks === 2 || noClicks === 3){
+        avoidMode = true;
+        showMessage(`
+          <div style="font-size:22px; font-weight:900;">NO button started acting weird 😭🩷</div>
+          <div style="margin-top:10px; opacity:.95;">
+            Try again… if you can 😈💞
+          </div>
+        `);
+        moveNoButton();
       }
 
-      // 2,3,5,6,... always evade forever ✅
-      moveNo();
-      hint.textContent = "👀 the No button is getting shy...";
+      if(noClicks === 4){
+        avoidMode = true;
+        showMessage(`
+          <div style="font-size:26px; font-weight:900;">just say you hate me 😭</div>
+          <div style="margin-top:10px; opacity:.95;">(the NO button will not cooperate anymore)</div>
+        `);
+        moveNoButton();
+      }
+
+      if(noClicks >= 5){
+        avoidMode = true;
+        moveNoButton();
+      }
     });
 
-    // Hover behavior: after click count >= 2, avoid on hover too
-    noButton.addEventListener("mouseenter", () => {
-      if (noClickCount >= 2) moveNo();
+    // YES click behavior:
+    // Show big colorful love message, lots of hearts, hide NO
+    yesBtn.addEventListener("click", () => {
+      avoidMode = false;
+      noWrap.classList.add("hidden");
+      yesBtn.disabled = true;
+      yesBtn.style.filter = "grayscale(.1) brightness(1.1)";
+      card.classList.add("successGlow");
+
+      title.innerHTML = "SUIIIIIIIIIIII 💘💘💘";
+      sub.innerHTML = "I lovee you soo much princess 👑💖";
+
+      showMessage(`
+        <div style="font-size:28px; font-weight:1000;">
+          YOU'RE MY VALENTINE EVERY DAY 🩷🩷🩷🩷🩷
+        </div>
+        <div style="margin-top:12px; font-size:20px; font-weight:800;">
+          💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
+        </div>
+        <div style="margin-top:12px; opacity:.95; font-size:18px; line-height:1.4;">
+          Thank you for being in my life 😭💗<br/>
+          I choose you today, tomorrow, and always 💞
+        </div>
+        <div style="margin-top:12px; font-size:20px; font-weight:900;">
+          💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
+        </div>
+      `);
     });
 
-    // Yes celebration
-    yesButton.addEventListener("click", () => {
-      yesButton.textContent = TEXT.yes;
-      subtitle.textContent = "Best answer ever 💗";
-      hint.textContent = "Send me a screenshot 😄";
-
-      // confetti hearts
-      for(let i=0;i<28;i++){
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-        c.style.left = rand(5, 95) + "vw";
-        c.style.fontSize = rand(16, 34) + "px";
-        c.style.setProperty("--dx", rand(-120, 120) + "px");
-        c.style.setProperty("--rot", rand(90, 540) + "deg");
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 2400);
-      }
-
-      // make No calm down after yes
-      noButton.disabled = true;
-      noButton.style.opacity = .45;
-      noButton.style.cursor = "not-allowed";
+    // Make sure NO button starts in normal position (relative) until it needs to move
+    // If user resizes, keep it in bounds if avoid mode is on
+    window.addEventListener("resize", () => {
+      if(avoidMode) moveNoButton();
     });
   </script>
 </body>
