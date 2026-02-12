@@ -24,7 +24,8 @@
 
       background:
         radial-gradient(1200px 800px at 20% 20%, rgba(255,0,150,.35), transparent 60%),
-        radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%),
+        radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%
+        ),
         radial-gradient(700px 700px at 60% 90%, rgba(255,255,0,.18), transparent 55%),
         url("Red%20Zone.jpg") center/cover no-repeat fixed;
     }
@@ -66,7 +67,6 @@
       transition: filter .2s ease, transform .2s ease, opacity .2s ease;
     }
 
-    /* Locked (before intro is dismissed) */
     .locked{
       filter: blur(6px) brightness(.9);
       opacity: .75;
@@ -96,7 +96,7 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    /* ✅ UPDATED: make this paragraph black */
+    /* ✅ black */
     .sub{
       margin: 0 auto 18px;
       width:min(520px, 95%);
@@ -126,6 +126,7 @@
       font-size: 18px;
       transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     #yesBtn{
@@ -135,11 +136,10 @@
     }
     #yesBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-    /* No button container that can move around */
     #noWrap{
       position: relative;
       display:inline-block;
-      z-index: 10000; /* ✅ so it stays clickable when it jumps around */
+      z-index: 10000;
     }
     #noBtn{
       color:#fff;
@@ -148,7 +148,6 @@
     }
     #noBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-    /* Message box */
     .message{
       margin: 20px auto 0;
       width: min(620px, 96%);
@@ -167,7 +166,6 @@
       line-height: 1.35;
     }
 
-    /* Success state */
     .successGlow{
       box-shadow:
         0 18px 60px rgba(0,0,0,.35),
@@ -178,7 +176,6 @@
 
     .hidden{ display:none !important; }
 
-    /* small screens */
     @media (max-width:420px){
       button{ width: 140px; }
       .btnRow{ gap: 12px; }
@@ -198,6 +195,7 @@
       -webkit-backdrop-filter: blur(8px);
     }
     .introBox{
+      position: relative; /* ✅ so fake button can move inside this box */
       width: min(760px, 94vw);
       border-radius: 26px;
       padding: 26px 20px;
@@ -207,6 +205,8 @@
       text-align:center;
       color:#fff;
       text-shadow: 0 10px 26px rgba(0,0,0,.45);
+      overflow: hidden; /* ✅ keep moving button inside box */
+      min-height: 240px;
     }
     .introTitle{
       font-size: clamp(26px, 4.2vw, 52px);
@@ -221,6 +221,16 @@
       width: min(620px, 96%);
       line-height: 1.45;
     }
+
+    .introBtns{
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      margin-top: 10px;
+      position: relative;
+      min-height: 70px;
+    }
+
     #startBtn{
       color:#fff;
       background: linear-gradient(90deg, #ff2aa8, #ff7b2f, #ffd000);
@@ -230,23 +240,45 @@
       font-size: 18px;
     }
     #startBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+
+    /* ✅ fake button wrapper that will move */
+    #fakeWrap{
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+    }
+    #fakeBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #6a5cff, #2ad4ff);
+      box-shadow: 0 12px 28px rgba(80, 190, 255, .28);
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 18px;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
 
-  <!-- floating hearts -->
   <div class="hearts" id="hearts"></div>
 
   <!-- INTRO OVERLAY -->
   <div class="introOverlay" id="introOverlay">
-    <div class="introBox">
+    <div class="introBox" id="introBox">
       <div class="introTitle">Dear Miss Altaher (; </div>
       <p class="introText">
         I have a tiny question for you… 💖<br/>
       </p>
 
-      <!-- ✅ UPDATED: safe text -->
-      <button id="startBtn">Yes Daddy..?</button>
+      <div class="introBtns">
+        <button id="startBtn">Yes Daddy...?</button>
+
+        <!-- ✅ NEW: troll button that avoids -->
+        <span id="fakeWrap">
+          <button id="fakeBtn">Yes ya 5ara</button>
+        </span>
+      </div>
     </div>
   </div>
 
@@ -254,7 +286,6 @@
     <div class="badge">💌 Dear Miss Altaher 😉 ✨</div>
     <h1 id="title">Will you be my Valentine? 💘</h1>
 
-    <!-- ✅ UPDATED: second line BOLD + ALL CAPS -->
     <p class="sub" id="sub">
       3ala project el vision msht8ltesh hek <br/>
       <span style="font-weight:900; text-transform:uppercase;">
@@ -291,6 +322,10 @@
     for(let i=0;i<18;i++) spawnHeart();
     setInterval(spawnHeart, 550);
 
+    function rand(min, max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+
     // ===== Intro logic =====
     const introOverlay = document.getElementById("introOverlay");
     const startBtn = document.getElementById("startBtn");
@@ -299,6 +334,40 @@
     startBtn.addEventListener("click", () => {
       introOverlay.classList.add("hidden");
       card.classList.remove("locked");
+    });
+
+    // ✅ NEW: fake intro button that avoids
+    const introBox = document.getElementById("introBox");
+    const fakeWrap = document.getElementById("fakeWrap");
+    const fakeBtn = document.getElementById("fakeBtn");
+
+    function moveFakeButton(){
+      const boxRect = introBox.getBoundingClientRect();
+      const wrapRect = fakeWrap.getBoundingClientRect();
+      const pad = 12;
+
+      // place inside introBox
+      fakeWrap.style.position = "absolute";
+      fakeWrap.style.transform = ""; // stop center transform once moving
+
+      const maxLeft = Math.max(pad, boxRect.width  - wrapRect.width  - pad);
+      const maxTop  = Math.max(pad, boxRect.height - wrapRect.height - pad);
+
+      const left = rand(pad, Math.floor(maxLeft));
+      // keep it in lower half of box so it looks natural
+      const top  = rand(Math.floor(boxRect.height * 0.45), Math.floor(maxTop));
+
+      fakeWrap.style.left = left + "px";
+      fakeWrap.style.top  = top  + "px";
+    }
+
+    // run away on hover/touch/click
+    fakeWrap.addEventListener("mouseenter", moveFakeButton);
+    fakeBtn.addEventListener("mouseenter", moveFakeButton);
+    fakeBtn.addEventListener("touchstart", moveFakeButton, {passive:true});
+    fakeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveFakeButton();
     });
 
     // ===== Main logic =====
@@ -317,16 +386,11 @@
       msgBox.style.display = "block";
     }
 
-    function rand(min, max){
-      return Math.floor(Math.random()*(max-min+1))+min;
-    }
-
-    // ✅ UPDATED: jump anywhere on the SCREEN (viewport) and never go out of bounds
+    // ✅ jump anywhere on the SCREEN and never out of bounds
     function moveNoButton(){
       const wrapRect = noWrap.getBoundingClientRect();
       const pad = 12;
 
-      // Make it float anywhere on the screen
       noWrap.style.position = "fixed";
 
       const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
@@ -360,7 +424,7 @@
         showMessage(`
           <div style="font-size:26px; font-weight:900;">ohhhhh 💔💔💔💔💔💔💔</div>
           <div style="margin-top:10px; font-size:18px;">
-            <b>Invalid operation</b> <br/>
+            <b>Invalid operation</b><br/>
             <span style="opacity:.95;">dabri 7alek</span>
           </div>
         `);
@@ -371,7 +435,7 @@
         showMessage(`
           <div style="font-size:22px; font-weight:900;">just say you hate me</div>
           <div style="margin-top:10px; opacity:.95;">
-            Try again… if you can 😈💞
+            .....💞
           </div>
         `);
         moveNoButton();
@@ -396,7 +460,7 @@
     yesBtn.addEventListener("click", () => {
       avoidMode = false;
 
-      // bring NO back into the row (optional, but clean)
+      // reset NO position cleanly
       noWrap.style.position = "relative";
       noWrap.style.left = "";
       noWrap.style.top = "";
@@ -418,7 +482,7 @@
         </div>
         <div style="margin-top:12px; opacity:.95; font-size:18px; line-height:1.4;">
           You are my everything <br/>
-          I choose you today, tomorrow, and always 💞
+          I choose you today, tomorrow, and always....Maybe HAHAHA jk
         </div>
         <div style="margin-top:12px; font-size:20px; font-weight:900;">
           💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
