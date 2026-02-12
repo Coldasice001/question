@@ -96,7 +96,7 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    /* ✅ UPDATED: make this paragraph black */
+    /* make this paragraph black */
     .sub{
       margin: 0 auto 18px;
       width:min(520px, 95%);
@@ -139,7 +139,7 @@
     #noWrap{
       position: relative;
       display:inline-block;
-      z-index: 10000; /* ✅ so it stays clickable when it jumps around */
+      z-index: 10000;
     }
     #noBtn{
       color:#fff;
@@ -221,6 +221,18 @@
       width: min(620px, 96%);
       line-height: 1.45;
     }
+
+    /* Intro buttons row */
+    .introBtns{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap: 14px;
+      margin-top: 6px;
+      position: relative;
+      min-height: 70px;
+    }
+
     #startBtn{
       color:#fff;
       background: linear-gradient(90deg, #ff2aa8, #ff7b2f, #ffd000);
@@ -230,6 +242,22 @@
       font-size: 18px;
     }
     #startBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+
+    /* IDC button that dodges immediately */
+    #idcWrap{
+      position: relative;
+      display:inline-block;
+      z-index: 10001;
+    }
+    #idcBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #6a5cff, #2ad4ff);
+      box-shadow: 0 12px 28px rgba(80, 190, 255, .28);
+      padding: 14px 26px;
+      border-radius: 18px;
+      font-size: 18px;
+    }
+    #idcBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
   </style>
 </head>
 <body>
@@ -245,8 +273,14 @@
         I have a tiny question for you… 💖<br/>
       </p>
 
-      <!-- ✅ UPDATED: safe text -->
-      <button id="startBtn">Yes Daddy..?</button>
+      <!-- ✅ UPDATED: added IDC button that avoids immediately -->
+      <div class="introBtns">
+        <button id="startBtn">YES 😳💖</button>
+
+        <span id="idcWrap">
+          <button id="idcBtn">IDC 🙃</button>
+        </span>
+      </div>
     </div>
   </div>
 
@@ -254,7 +288,6 @@
     <div class="badge">💌 Dear Miss Altaher 😉 ✨</div>
     <h1 id="title">Will you be my Valentine? 💘</h1>
 
-    <!-- ✅ UPDATED: second line BOLD + ALL CAPS -->
     <p class="sub" id="sub">
       3ala project el vision msht8ltesh hek <br/>
       <span style="font-weight:900; text-transform:uppercase;">
@@ -301,6 +334,48 @@
       card.classList.remove("locked");
     });
 
+    // ===== Intro IDC dodge logic (avoids immediately) =====
+    const idcWrap = document.getElementById("idcWrap");
+    const idcBtn  = document.getElementById("idcBtn");
+
+    function rand(min, max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+
+    function moveIDCButton(){
+      const wrapRect = idcWrap.getBoundingClientRect();
+      const pad = 12;
+
+      // float anywhere on the screen
+      idcWrap.style.position = "fixed";
+
+      const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
+      const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
+
+      const left = rand(pad, Math.floor(maxLeft));
+      const top  = rand(pad, Math.floor(maxTop));
+
+      idcWrap.style.left = left + "px";
+      idcWrap.style.top  = top  + "px";
+    }
+
+    // dodge as soon as user tries to reach it
+    function setIDCImmediateAvoid(){
+      idcWrap.addEventListener("mouseenter", moveIDCButton);
+      idcBtn.addEventListener("mouseenter", moveIDCButton);
+
+      idcBtn.addEventListener("touchstart", (e) => {
+        moveIDCButton();
+      }, {passive:true});
+
+      // if they somehow click it, still dodge
+      idcBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        moveIDCButton();
+      });
+    }
+    setIDCImmediateAvoid();
+
     // ===== Main logic =====
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
@@ -317,11 +392,7 @@
       msgBox.style.display = "block";
     }
 
-    function rand(min, max){
-      return Math.floor(Math.random()*(max-min+1))+min;
-    }
-
-    // ✅ UPDATED: jump anywhere on the SCREEN (viewport) and never go out of bounds
+    // jump anywhere on the SCREEN (viewport) and never go out of bounds
     function moveNoButton(){
       const wrapRect = noWrap.getBoundingClientRect();
       const pad = 12;
@@ -396,7 +467,7 @@
     yesBtn.addEventListener("click", () => {
       avoidMode = false;
 
-      // bring NO back into the row (optional, but clean)
+      // bring NO back into the row
       noWrap.style.position = "relative";
       noWrap.style.left = "";
       noWrap.style.top = "";
@@ -428,6 +499,8 @@
 
     window.addEventListener("resize", () => {
       if(avoidMode) moveNoButton();
+      // keep IDC within bounds too
+      moveIDCButton();
     });
   </script>
 </body>
