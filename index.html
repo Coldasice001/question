@@ -266,27 +266,27 @@
     <div class="introBox">
       <div class="introTitle">Dear Miss Altaher (; </div>
       <p class="introText">
-        I have a tiny question for you… <br/>
+        I have a tiny question for you… 💖<br/>
       </p>
 
       <div class="introBtns">
-        <button id="startBtn">Yes Daddy...?</button>
+        <button id="startBtn">YES 😳💖</button>
 
         <span id="idcWrap">
-          <button id="idcBtn">Yes ya 5ara</button>
+          <button id="idcBtn">IDC 🙃</button>
         </span>
       </div>
     </div>
   </div>
 
   <div class="card locked" id="card">
-    <div class="badge">💌 Dear Elena  ✨</div>
+    <div class="badge">💌 Dear Miss Altaher 😉 ✨</div>
     <h1 id="title">Will you be my Valentine? 💘</h1>
 
     <p class="sub" id="sub">
-      Mn hasa Bakolek  <br/>
+      3ala project el vision msht8ltesh hek <br/>
       <span style="font-weight:900; text-transform:uppercase;">
-        Choose wisely...(YA ANA BA5DEK YA ALLAH BYA5DEK)
+        (YA ANA BA5DEK YA ALLAH BYA5DEK)
       </span>
     </p>
 
@@ -339,16 +339,24 @@
     const idcBtn  = document.getElementById("idcBtn");
 
     function moveIDCButton(){
-      const wrapRect = idcWrap.getBoundingClientRect();
       const pad = 12;
+
+      const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
       idcWrap.style.position = "fixed";
 
-      const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
-      const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
+      const w = idcWrap.offsetWidth;
+      const h = idcWrap.offsetHeight;
 
-      idcWrap.style.left = rand(pad, Math.floor(maxLeft)) + "px";
-      idcWrap.style.top  = rand(pad, Math.floor(maxTop))  + "px";
+      const maxLeft = Math.max(pad, Math.floor(vw - w - pad));
+      const maxTop  = Math.max(pad, Math.floor(vh - h - pad));
+
+      const left = rand(pad, maxLeft);
+      const top  = rand(pad, maxTop);
+
+      idcWrap.style.left = Math.min(Math.max(left, pad), maxLeft) + "px";
+      idcWrap.style.top  = Math.min(Math.max(top, pad), maxTop) + "px";
     }
 
     idcWrap.addEventListener("mouseenter", moveIDCButton);
@@ -365,28 +373,36 @@
     const sub = document.getElementById("sub");
 
     let noClicks = 0;
-    let avoidMode = false; // when true, NO avoids on hover/touch
+    let avoidMode = false;
 
     function showMessage(html){
       msgBox.innerHTML = html;
       msgBox.style.display = "block";
     }
 
-    // Move NO anywhere on screen
+    // ✅ UPDATED: NO stays inside screen bounds
     function moveNoButton(){
-      const wrapRect = noWrap.getBoundingClientRect();
       const pad = 12;
+
+      const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
       noWrap.style.position = "fixed";
 
-      const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
-      const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
+      const w = noWrap.offsetWidth;
+      const h = noWrap.offsetHeight;
 
-      noWrap.style.left = rand(pad, Math.floor(maxLeft)) + "px";
-      noWrap.style.top  = rand(pad, Math.floor(maxTop))  + "px";
+      const maxLeft = Math.max(pad, Math.floor(vw - w - pad));
+      const maxTop  = Math.max(pad, Math.floor(vh - h - pad));
+
+      const left = rand(pad, maxLeft);
+      const top  = rand(pad, maxTop);
+
+      noWrap.style.left = Math.min(Math.max(left, pad), maxLeft) + "px";
+      noWrap.style.top  = Math.min(Math.max(top, pad), maxTop) + "px";
     }
 
-    // ✅ Avoid only when avoidMode is ON (we will turn it ON later)
+    // Avoid only when avoidMode is ON
     function setAvoidOnHover(){
       noWrap.addEventListener("mouseenter", () => {
         if(avoidMode) moveNoButton();
@@ -400,10 +416,10 @@
     }
     setAvoidOnHover();
 
-    // ✅ NEW BEHAVIOR:
-    // 1st click -> "oh" (no move)
-    // 2nd click -> "just say you hate me" (NO STILL DOES NOT MOVE)
-    // 3rd time trying -> avoid starts (it will jump away like the intro IDC)
+    // NO click behavior:
+    // 1st click -> oh message (no move)
+    // 2nd click -> hate me message (no move)
+    // 3rd+ click -> starts avoiding + jumps immediately
     noBtn.addEventListener("click", () => {
       noClicks++;
 
@@ -411,33 +427,30 @@
         showMessage(`
           <div style="font-size:26px; font-weight:900;">ohhhhh 💔💔💔💔💔💔💔</div>
           <div style="margin-top:10px; font-size:18px;">
-            <b>B3een allah manti udk english </b> <br/>
-            <span style="opacity:.95;">jk jk bahbek alf  HAHAAH</span>
+            <b>Invalid operation</b> <br/>
+            <span style="opacity:.95;">dabri 7alek</span>
           </div>
         `);
         return;
       }
 
       if(noClicks === 2){
-        // ✅ show message but DO NOT enable avoid and DO NOT move
         showMessage(`
-          <div style="font-size:22px; font-weight:900;">....</div>
+          <div style="font-size:22px; font-weight:900;">just say you hate me</div>
           <div style="margin-top:10px; opacity:.95;">
-            just say you hate me
+            Try again… if you can 😈💞
           </div>
         `);
         return;
       }
 
-      // ✅ from 3rd click onward: start avoiding (and jump immediately too)
       avoidMode = true;
 
       showMessage(`
-        <div style="font-size:26px; font-weight:900;">You know what, BYE</div>
-        <div style="margin-top:10px; opacity:.95;">how does your attitude feel? I DARE YOU CLICK NO AGAIN 😇😈</div>
+        <div style="font-size:26px; font-weight:900;">just say you hate me 😭</div>
+        <div style="margin-top:10px; opacity:.95;">(the NO button will not cooperate anymore)</div>
       `);
 
-      // jump away immediately after they manage to click it
       moveNoButton();
     });
 
@@ -456,7 +469,7 @@
       card.classList.add("successGlow");
 
       title.innerHTML = "SUIIIIIIIIIIII 💘💘💘";
-      sub.innerHTML = "I lovee you soo much my little princess BAHBEK MALIOON 👑💖";
+      sub.innerHTML = "I lovee you soo much princess 👑💖";
 
       showMessage(`
         <div style="font-size:28px; font-weight:1000;">
@@ -466,9 +479,8 @@
           💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
         </div>
         <div style="margin-top:12px; opacity:.95; font-size:18px; line-height:1.4;">
-          I love every second and every miunute with you every day (7ata nakadek) <br/>
+          You are my everything <br/>
           I choose you today, tomorrow, and always 💞
-          I love you the most, my dear, my one.
         </div>
         <div style="margin-top:12px; font-size:20px; font-weight:900;">
           💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
@@ -476,10 +488,19 @@
       `);
     });
 
+    // ✅ Keep NO + IDC in bounds on resize (desktop)
     window.addEventListener("resize", () => {
       if(avoidMode) moveNoButton();
       moveIDCButton();
     });
+
+    // ✅ Keep in bounds when mobile address bar changes viewport
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", () => {
+        if(avoidMode) moveNoButton();
+        moveIDCButton();
+      });
+    }
   </script>
 </body>
 </html>
