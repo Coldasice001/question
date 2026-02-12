@@ -96,13 +96,14 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
+    /* ✅ UPDATED: make this paragraph black */
     .sub{
       margin: 0 auto 18px;
       width:min(520px, 95%);
       font-size: clamp(15px, 2.1vw, 18px);
-      color: rgba(255,255,255,.92);
+      color: #000;
       line-height: 1.45;
-      text-shadow: 0 8px 22px rgba(0,0,0,.38);
+      text-shadow: none;
     }
 
     .btnRow{
@@ -138,6 +139,7 @@
     #noWrap{
       position: relative;
       display:inline-block;
+      z-index: 10000; /* ✅ so it stays clickable when it jumps around */
     }
     #noBtn{
       color:#fff;
@@ -182,7 +184,7 @@
       .btnRow{ gap: 12px; }
     }
 
-    /* ===== Intro overlay (NEW) ===== */
+    /* ===== Intro overlay ===== */
     .introOverlay{
       position: fixed;
       inset: 0;
@@ -235,26 +237,29 @@
   <!-- floating hearts -->
   <div class="hearts" id="hearts"></div>
 
-  <!-- INTRO OVERLAY (NEW) -->
+  <!-- INTRO OVERLAY -->
   <div class="introOverlay" id="introOverlay">
     <div class="introBox">
       <div class="introTitle">Dear Miss Altaher (; </div>
       <p class="introText">
         I have a tiny question for you… 💖<br/>
-        
       </p>
 
-      <!-- You wanted: “yes daddy?” — replaced with safe text -->
-      <button id="startBtn">Yes Daddy..?</button>
+      <!-- ✅ UPDATED: safe text -->
+      <button id="startBtn">YES 😳💖</button>
     </div>
   </div>
 
   <div class="card locked" id="card">
     <div class="badge">💌 Dear Miss Altaher 😉 ✨</div>
     <h1 id="title">Will you be my Valentine? 💘</h1>
+
+    <!-- ✅ UPDATED: second line BOLD + ALL CAPS -->
     <p class="sub" id="sub">
       3ala project el vision msht8ltesh hek <br/>
-      Choose wisely….. (ya ana ba5dek ya allah bya5dek )
+      <span style="font-weight:900; text-transform:uppercase;">
+        (YA ANA BA5DEK YA ALLAH BYA5DEK)
+      </span>
     </p>
 
     <div class="btnRow" id="btnRow">
@@ -286,7 +291,7 @@
     for(let i=0;i<18;i++) spawnHeart();
     setInterval(spawnHeart, 550);
 
-    // ===== Intro logic (NEW) =====
+    // ===== Intro logic =====
     const introOverlay = document.getElementById("introOverlay");
     const startBtn = document.getElementById("startBtn");
     const card = document.getElementById("card");
@@ -305,7 +310,7 @@
     const sub = document.getElementById("sub");
 
     let noClicks = 0;
-    let avoidMode = false; // when true, NO button runs away
+    let avoidMode = false;
 
     function showMessage(html){
       msgBox.innerHTML = html;
@@ -316,20 +321,22 @@
       return Math.floor(Math.random()*(max-min+1))+min;
     }
 
-    // Moves the NO button wrapper to a new random position within the card
+    // ✅ UPDATED: jump anywhere on the SCREEN (viewport) and never go out of bounds
     function moveNoButton(){
-      const cardRect = card.getBoundingClientRect();
       const wrapRect = noWrap.getBoundingClientRect();
+      const pad = 12;
 
-      const pad = 20;
-      const maxLeft = Math.max(pad, cardRect.width - wrapRect.width - pad);
+      // Make it float anywhere on the screen
+      noWrap.style.position = "fixed";
 
-      const newLeft = rand(pad, Math.floor(maxLeft));
-      const newTop  = rand(90, Math.floor(cardRect.height - wrapRect.height - pad));
+      const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
+      const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
 
-      noWrap.style.position = "absolute";
-      noWrap.style.left = newLeft + "px";
-      noWrap.style.top  = newTop + "px";
+      const left = rand(pad, Math.floor(maxLeft));
+      const top  = rand(pad, Math.floor(maxTop));
+
+      noWrap.style.left = left + "px";
+      noWrap.style.top  = top  + "px";
     }
 
     function setAvoidOnHover(){
@@ -345,7 +352,7 @@
     }
     setAvoidOnHover();
 
-    // NO click behavior:
+    // NO click behavior
     noBtn.addEventListener("click", () => {
       noClicks++;
 
@@ -362,7 +369,7 @@
       if(noClicks === 2 || noClicks === 3){
         avoidMode = true;
         showMessage(`
-          <div style="font-size:22px; font-weight:900;">just say you hate me  </div>
+          <div style="font-size:22px; font-weight:900;">just say you hate me</div>
           <div style="margin-top:10px; opacity:.95;">
             Try again… if you can 😈💞
           </div>
@@ -385,9 +392,15 @@
       }
     });
 
-    // YES click behavior:
+    // YES click behavior
     yesBtn.addEventListener("click", () => {
       avoidMode = false;
+
+      // bring NO back into the row (optional, but clean)
+      noWrap.style.position = "relative";
+      noWrap.style.left = "";
+      noWrap.style.top = "";
+
       noWrap.classList.add("hidden");
       yesBtn.disabled = true;
       yesBtn.style.filter = "grayscale(.1) brightness(1.1)";
@@ -404,7 +417,7 @@
           💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
         </div>
         <div style="margin-top:12px; opacity:.95; font-size:18px; line-height:1.4;">
-         You are my everything  <br/>
+          You are my everything <br/>
           I choose you today, tomorrow, and always 💞
         </div>
         <div style="margin-top:12px; font-size:20px; font-weight:900;">
