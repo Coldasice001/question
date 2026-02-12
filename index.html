@@ -1,326 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Be My Valentine 💘</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Be My Valentine 💘</title>
+  <style>
+    :root{
+      --glass: rgba(255,255,255,.18);
+      --glass2: rgba(255,255,255,.28);
+      --stroke: rgba(255,255,255,.35);
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
 
-<style>
-:root{
-  --glass: rgba(255,255,255,.18);
-  --glass2: rgba(255,255,255,.28);
-  --stroke: rgba(255,255,255,.35);
-  --shadow: 0 18px 60px rgba(0,0,0,.35);
-}
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow:hidden;
 
-*{ box-sizing: border-box; }
+      background:
+        radial-gradient(1200px 800px at 20% 20%, rgba(255,0,150,.35), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%),
+        radial-gradient(700px 700px at 60% 90%, rgba(255,255,0,.18), transparent 55%),
+        url("Red%20Zone.jpg") center/cover no-repeat fixed;
+    }
 
-body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  overflow:hidden;
+    /* floating hearts background */
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.85;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
+    }
 
-  background:
-    radial-gradient(1200px 800px at 20% 20%, rgba(255,0,150,.35), transparent 60%),
-    radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%),
-    radial-gradient(700px 700px at 60% 90%, rgba(255,255,0,.18), transparent 55%),
-    url("Red%20Zone.jpg") center/cover no-repeat fixed;
-}
+    .heart{
+      position:absolute;
+      font-size: clamp(16px, 2.6vw, 30px);
+      animation: floatUp linear infinite;
+      transform: translateY(110vh);
+      opacity: .9;
+    }
+    @keyframes floatUp{
+      0%{ transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%{ opacity: .95; }
+      100%{ transform: translateY(-25vh) rotate(360deg); opacity: 0; }
+    }
 
-/* floating hearts */
-.hearts{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  opacity:.85;
-}
+    /* Main card */
+    .card{
+      position:relative;
+      width:min(720px, 92vw);
+      padding: 34px 26px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--glass), rgba(255,255,255,.10));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align:center;
+      transition: filter .2s ease, transform .2s ease, opacity .2s ease;
+    }
 
-.heart{
-  position:absolute;
-  font-size: clamp(16px, 2.6vw, 30px);
-  animation: floatUp linear infinite;
-  transform: translateY(110vh);
-  opacity: .9;
-}
-@keyframes floatUp{
-  0%{ transform: translateY(110vh) rotate(0deg); opacity: 0; }
-  10%{ opacity: .95; }
-  100%{ transform: translateY(-25vh) rotate(360deg); opacity: 0; }
-}
+    /* Locked (before intro is dismissed) */
+    .locked{
+      filter: blur(6px) brightness(.9);
+      opacity: .75;
+      pointer-events: none;
+      transform: scale(.99);
+    }
 
-/* Main card */
-.card{
-  position:relative;
-  width:min(720px, 92vw);
-  padding: 34px 26px;
-  border-radius: 26px;
-  background: linear-gradient(135deg, var(--glass), rgba(255,255,255,.10));
-  border: 1px solid var(--stroke);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(14px);
-  text-align:center;
-  transition: .2s;
-}
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,0,140,.35), rgba(0,255,255,.28), rgba(255,255,0,.22));
+      border: 1px solid rgba(255,255,255,.30);
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-shadow: 0 6px 18px rgba(0,0,0,.35);
+    }
 
-.locked{
-  filter: blur(6px) brightness(.9);
-  opacity:.75;
-  pointer-events:none;
-}
+    h1{
+      margin: 16px 0 8px;
+      font-size: clamp(28px, 4.5vw, 54px);
+      color: #fff;
+      line-height: 1.05;
+      text-shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
 
-.badge{
-  display:inline-flex;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255,0,140,.35), rgba(0,255,255,.28), rgba(255,255,0,.22));
-  border: 1px solid rgba(255,255,255,.30);
-  color:#fff;
-  font-weight:700;
-}
+    /* ✅ UPDATED: make this paragraph black */
+    .sub{
+      margin: 0 auto 18px;
+      width:min(520px, 95%);
+      font-size: clamp(15px, 2.1vw, 18px);
+      color: #000;
+      line-height: 1.45;
+      text-shadow: none;
+    }
 
-h1{
-  margin:16px 0 8px;
-  font-size: clamp(28px, 4.5vw, 54px);
-  color:#fff;
-}
+    .btnRow{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap: 16px;
+      margin-top: 20px;
+      position: relative;
+      min-height: 90px;
+    }
 
-/* black text */
-.sub{
-  margin: 0 auto 18px;
-  width:min(520px, 95%);
-  font-size: clamp(15px, 2.1vw, 18px);
-  color:#000;
-}
+    button{
+      border:0;
+      cursor:pointer;
+      font-weight: 800;
+      letter-spacing:.3px;
+      padding: 14px 22px;
+      border-radius: 16px;
+      font-size: 18px;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
 
-/* buttons */
-button{
-  border:0;
-  cursor:pointer;
-  font-weight:800;
-  padding:14px 22px;
-  border-radius:16px;
-  font-size:18px;
-  user-select:none;
-}
+    #yesBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #ff2aa8, #ff7b2f, #ffd000);
+      box-shadow: 0 12px 28px rgba(255, 70, 170, .35);
+    }
+    #yesBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-#yesBtn{
-  color:#fff;
-  background: linear-gradient(90deg, #ff2aa8, #ff7b2f, #ffd000);
-}
+    /* No button container that can move around */
+    #noWrap{
+      position: relative;
+      display:inline-block;
+      z-index: 10000; /* ✅ so it stays clickable when it jumps around */
+    }
+    #noBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #6a5cff, #2ad4ff);
+      box-shadow: 0 12px 28px rgba(80, 190, 255, .28);
+    }
+    #noBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-#noWrap{
-  position:relative;
-  display:inline-block;
-  z-index:10000;
-}
-#noBtn{
-  color:#fff;
-  background: linear-gradient(90deg, #6a5cff, #2ad4ff);
-}
+    /* Message box */
+    .message{
+      margin: 20px auto 0;
+      width: min(620px, 96%);
+      padding: 18px 16px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(0,0,0,.28), rgba(255,255,255,.10));
+      border: 1px solid rgba(255,255,255,.28);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      color:#fff;
+      display:none;
+      text-shadow: 0 8px 22px rgba(0,0,0,.38);
+    }
+    .message.big{
+      padding: 22px 18px;
+      font-size: clamp(16px, 2.4vw, 20px);
+      line-height: 1.35;
+    }
 
-.btnRow{
-  display:flex;
-  justify-content:center;
-  gap:16px;
-  margin-top:20px;
-  min-height:90px;
-}
+    /* Success state */
+    .successGlow{
+      box-shadow:
+        0 18px 60px rgba(0,0,0,.35),
+        0 0 0 2px rgba(255,255,255,.18),
+        0 0 80px rgba(255, 0, 150, .25),
+        0 0 90px rgba(0, 255, 255, .18);
+    }
 
-.message{
-  margin:20px auto 0;
-  width:min(620px,96%);
-  padding:18px;
-  border-radius:22px;
-  background:rgba(0,0,0,.4);
-  color:#fff;
-  display:none;
-}
+    .hidden{ display:none !important; }
 
-/* intro */
-.introOverlay{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.45);
-  backdrop-filter: blur(8px);
-  z-index:9999;
-}
+    /* small screens */
+    @media (max-width:420px){
+      button{ width: 140px; }
+      .btnRow{ gap: 12px; }
+    }
 
-.introBox{
-  position:relative;
-  width:min(760px,94vw);
-  border-radius:26px;
-  padding:26px 20px;
-  background:linear-gradient(135deg, var(--glass2), rgba(255,255,255,.10));
-  border:1px solid rgba(255,255,255,.30);
-  text-align:center;
-  color:#fff;
-  overflow:hidden;
-}
-
-.introBtns{
-  display:flex;
-  justify-content:center;
-  gap:14px;
-  margin-top:12px;
-  position:relative;
-  min-height:70px;
-}
-
-#fakeWrap{
-  position:relative;
-  display:inline-block;
-}
-
-#fakeBtn{
-  background: linear-gradient(90deg, #6a5cff, #2ad4ff);
-  color:#fff;
-}
-
-.hidden{ display:none !important; }
-
-</style>
+    /* ===== Intro overlay ===== */
+    .introOverlay{
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 9999;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .introBox{
+      width: min(760px, 94vw);
+      border-radius: 26px;
+      padding: 26px 20px;
+      background: linear-gradient(135deg, var(--glass2), rgba(255,255,255,.10));
+      border: 1px solid rgba(255,255,255,.30);
+      box-shadow: var(--shadow);
+      text-align:center;
+      color:#fff;
+      text-shadow: 0 10px 26px rgba(0,0,0,.45);
+    }
+    .introTitle{
+      font-size: clamp(26px, 4.2vw, 52px);
+      font-weight: 1000;
+      margin: 0 0 10px;
+      line-height: 1.05;
+    }
+    .introText{
+      font-size: clamp(15px, 2.1vw, 19px);
+      opacity: .95;
+      margin: 0 auto 18px;
+      width: min(620px, 96%);
+      line-height: 1.45;
+    }
+    #startBtn{
+      color:#fff;
+      background: linear-gradient(90deg, #ff2aa8, #ff7b2f, #ffd000);
+      box-shadow: 0 12px 28px rgba(255, 70, 170, .35);
+      padding: 14px 26px;
+      border-radius: 18px;
+      font-size: 18px;
+    }
+    #startBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+  </style>
 </head>
 <body>
 
-<div class="hearts" id="hearts"></div>
+  <!-- floating hearts -->
+  <div class="hearts" id="hearts"></div>
 
-<!-- INTRO -->
-<div class="introOverlay" id="introOverlay">
-  <div class="introBox" id="introBox">
-    <h2>Dear Miss Altaher (; </h2>
-    <p>I have a tiny question for you… 💖</p>
+  <!-- INTRO OVERLAY -->
+  <div class="introOverlay" id="introOverlay">
+    <div class="introBox">
+      <div class="introTitle">Dear Miss Altaher (; </div>
+      <p class="introText">
+        I have a tiny question for you… 💖<br/>
+      </p>
 
-    <div class="introBtns">
+      <!-- ✅ UPDATED: safe text -->
       <button id="startBtn">YES 😳💖</button>
-
-      <span id="fakeWrap">
-        <button id="fakeBtn">YES ya shater 😌</button>
-      </span>
     </div>
   </div>
-</div>
 
-<div class="card locked" id="card">
-  <div class="badge">💌 Dear Miss Altaher 😉 ✨</div>
-  <h1 id="title">Will you be my Valentine? 💘</h1>
+  <div class="card locked" id="card">
+    <div class="badge">💌 Dear Miss Altaher 😉 ✨</div>
+    <h1 id="title">Will you be my Valentine? 💘</h1>
 
-  <p class="sub">
-    3ala project el vision msht8ltesh hek <br/>
-    <span style="font-weight:900; text-transform:uppercase;">
-      (YA ANA BA5DEK YA ALLAH BYA5DEK)
-    </span>
-  </p>
+    <!-- ✅ UPDATED: second line BOLD + ALL CAPS -->
+    <p class="sub" id="sub">
+      3ala project el vision msht8ltesh hek <br/>
+      <span style="font-weight:900; text-transform:uppercase;">
+        (YA ANA BA5DEK YA ALLAH BYA5DEK)
+      </span>
+    </p>
 
-  <div class="btnRow">
-    <button id="yesBtn">YES 💖</button>
-    <span id="noWrap"><button id="noBtn">NO 🙃</button></span>
+    <div class="btnRow" id="btnRow">
+      <button id="yesBtn">YES 💖</button>
+
+      <span id="noWrap">
+        <button id="noBtn">NO 🙃</button>
+      </span>
+    </div>
+
+    <div class="message big" id="msgBox"></div>
   </div>
 
-  <div class="message" id="msgBox"></div>
-</div>
+  <script>
+    // ===== Floating hearts generator =====
+    const heartsEl = document.getElementById("hearts");
+    const heartChars = ["💗","💖","💘","💕","💞","💝","❤️","🩷","✨"];
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      h.style.left = Math.random()*100 + "vw";
+      h.style.animationDuration = (5 + Math.random()*6) + "s";
+      h.style.animationDelay = (Math.random()*1.5) + "s";
+      h.style.opacity = (0.5 + Math.random()*0.5).toFixed(2);
+      heartsEl.appendChild(h);
+      setTimeout(() => h.remove(), 12000);
+    }
+    for(let i=0;i<18;i++) spawnHeart();
+    setInterval(spawnHeart, 550);
 
-<script>
+    // ===== Intro logic =====
+    const introOverlay = document.getElementById("introOverlay");
+    const startBtn = document.getElementById("startBtn");
+    const card = document.getElementById("card");
 
-// floating hearts
-const heartsEl = document.getElementById("hearts");
-const heartChars = ["💗","💖","💘","💕","💞","💝","❤️","🩷","✨"];
-function spawnHeart(){
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
-  h.style.left = Math.random()*100 + "vw";
-  h.style.animationDuration = (5 + Math.random()*6) + "s";
-  heartsEl.appendChild(h);
-  setTimeout(()=>h.remove(),12000);
-}
-for(let i=0;i<18;i++) spawnHeart();
-setInterval(spawnHeart,550);
+    startBtn.addEventListener("click", () => {
+      introOverlay.classList.add("hidden");
+      card.classList.remove("locked");
+    });
 
-function rand(min,max){
-  return Math.floor(Math.random()*(max-min+1))+min;
-}
+    // ===== Main logic =====
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const noWrap = document.getElementById("noWrap");
+    const msgBox = document.getElementById("msgBox");
+    const title = document.getElementById("title");
+    const sub = document.getElementById("sub");
 
-// intro logic
-const introOverlay = document.getElementById("introOverlay");
-const startBtn = document.getElementById("startBtn");
-const card = document.getElementById("card");
+    let noClicks = 0;
+    let avoidMode = false;
 
-startBtn.onclick = ()=>{
-  introOverlay.classList.add("hidden");
-  card.classList.remove("locked");
-};
+    function showMessage(html){
+      msgBox.innerHTML = html;
+      msgBox.style.display = "block";
+    }
 
-// runner intro button (big motion but inside introBox)
-const introBox = document.getElementById("introBox");
-const fakeWrap = document.getElementById("fakeWrap");
-const fakeBtn = document.getElementById("fakeBtn");
+    function rand(min, max){
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
 
-function moveFakeButton(){
-  const boxRect = introBox.getBoundingClientRect();
-  const wrapRect = fakeWrap.getBoundingClientRect();
-  const pad = 14;
+    // ✅ UPDATED: jump anywhere on the SCREEN (viewport) and never go out of bounds
+    function moveNoButton(){
+      const wrapRect = noWrap.getBoundingClientRect();
+      const pad = 12;
 
-  fakeWrap.style.position = "absolute";
+      // Make it float anywhere on the screen
+      noWrap.style.position = "fixed";
 
-  const maxLeft = boxRect.width - wrapRect.width - pad;
-  const maxTop  = boxRect.height - wrapRect.height - pad;
+      const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
+      const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
 
-  const left = rand(pad, maxLeft);
-  const top  = rand(Math.floor(boxRect.height*0.5), maxTop);
+      const left = rand(pad, Math.floor(maxLeft));
+      const top  = rand(pad, Math.floor(maxTop));
 
-  fakeWrap.style.left = left + "px";
-  fakeWrap.style.top  = top  + "px";
-}
+      noWrap.style.left = left + "px";
+      noWrap.style.top  = top  + "px";
+    }
 
-fakeWrap.addEventListener("mouseenter", moveFakeButton);
-fakeBtn.addEventListener("mouseenter", moveFakeButton);
-fakeBtn.addEventListener("touchstart", moveFakeButton, {passive:true});
-fakeBtn.addEventListener("click", e=>{
-  e.preventDefault();
-  moveFakeButton();
-});
+    function setAvoidOnHover(){
+      noWrap.addEventListener("mouseenter", () => {
+        if(avoidMode) moveNoButton();
+      });
+      noBtn.addEventListener("mouseenter", () => {
+        if(avoidMode) moveNoButton();
+      });
+      noBtn.addEventListener("touchstart", () => {
+        if(avoidMode) moveNoButton();
+      }, {passive:true});
+    }
+    setAvoidOnHover();
 
-// main NO button logic
-const noWrap = document.getElementById("noWrap");
-const noBtn = document.getElementById("noBtn");
+    // NO click behavior
+    noBtn.addEventListener("click", () => {
+      noClicks++;
 
-function moveNoButton(){
-  const wrapRect = noWrap.getBoundingClientRect();
-  const pad = 12;
+      if(noClicks === 1){
+        showMessage(`
+          <div style="font-size:26px; font-weight:900;">ohhhhh 💔💔💔💔💔💔💔</div>
+          <div style="margin-top:10px; font-size:18px;">
+            <b>Invalid operation</b> <br/>
+            <span style="opacity:.95;">dabri 7alek</span>
+          </div>
+        `);
+      }
 
-  noWrap.style.position="fixed";
+      if(noClicks === 2 || noClicks === 3){
+        avoidMode = true;
+        showMessage(`
+          <div style="font-size:22px; font-weight:900;">just say you hate me</div>
+          <div style="margin-top:10px; opacity:.95;">
+            Try again… if you can 😈💞
+          </div>
+        `);
+        moveNoButton();
+      }
 
-  const maxLeft = window.innerWidth - wrapRect.width - pad;
-  const maxTop  = window.innerHeight - wrapRect.height - pad;
+      if(noClicks === 4){
+        avoidMode = true;
+        showMessage(`
+          <div style="font-size:26px; font-weight:900;">just say you hate me 😭</div>
+          <div style="margin-top:10px; opacity:.95;">(the NO button will not cooperate anymore)</div>
+        `);
+        moveNoButton();
+      }
 
-  noWrap.style.left = rand(pad,maxLeft)+"px";
-  noWrap.style.top  = rand(pad,maxTop)+"px";
-}
+      if(noClicks >= 5){
+        avoidMode = true;
+        moveNoButton();
+      }
+    });
 
-let avoidMode=false;
-noWrap.addEventListener("mouseenter",()=>{ if(avoidMode) moveNoButton(); });
-noBtn.addEventListener("mouseenter",()=>{ if(avoidMode) moveNoButton(); });
-noBtn.addEventListener("touchstart",()=>{ if(avoidMode) moveNoButton(); },{passive:true});
+    // YES click behavior
+    yesBtn.addEventListener("click", () => {
+      avoidMode = false;
 
-let noClicks=0;
-const msgBox=document.getElementById("msgBox");
+      // bring NO back into the row (optional, but clean)
+      noWrap.style.position = "relative";
+      noWrap.style.left = "";
+      noWrap.style.top = "";
 
-noBtn.onclick=()=>{
-  noClicks++;
-  if(noClicks>=2){
-    avoidMode=true;
-    moveNoButton();
-  }
-};
+      noWrap.classList.add("hidden");
+      yesBtn.disabled = true;
+      yesBtn.style.filter = "grayscale(.1) brightness(1.1)";
+      card.classList.add("successGlow");
 
-</script>
+      title.innerHTML = "SUIIIIIIIIIIII 💘💘💘";
+      sub.innerHTML = "I lovee you soo much princess 👑💖";
 
+      showMessage(`
+        <div style="font-size:28px; font-weight:1000;">
+          YOU'RE MY VALENTINE EVERY DAY 🩷🩷🩷🩷🩷
+        </div>
+        <div style="margin-top:12px; font-size:20px; font-weight:800;">
+          💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
+        </div>
+        <div style="margin-top:12px; opacity:.95; font-size:18px; line-height:1.4;">
+          You are my everything <br/>
+          I choose you today, tomorrow, and always 💞
+        </div>
+        <div style="margin-top:12px; font-size:20px; font-weight:900;">
+          💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
+        </div>
+      `);
+    });
+
+    window.addEventListener("resize", () => {
+      if(avoidMode) moveNoButton();
+    });
+  </script>
 </body>
 </html>
