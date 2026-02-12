@@ -24,8 +24,7 @@
 
       background:
         radial-gradient(1200px 800px at 20% 20%, rgba(255,0,150,.35), transparent 60%),
-        radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%
-        ),
+        radial-gradient(900px 600px at 80% 30%, rgba(0,255,255,.20), transparent 55%),
         radial-gradient(700px 700px at 60% 90%, rgba(255,255,0,.18), transparent 55%),
         url("Red%20Zone.jpg") center/cover no-repeat fixed;
     }
@@ -96,7 +95,7 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    /* ✅ black */
+    /* black text */
     .sub{
       margin: 0 auto 18px;
       width:min(520px, 95%);
@@ -178,7 +177,6 @@
 
     @media (max-width:420px){
       button{ width: 140px; }
-      .btnRow{ gap: 12px; }
     }
 
     /* ===== Intro overlay ===== */
@@ -195,7 +193,6 @@
       -webkit-backdrop-filter: blur(8px);
     }
     .introBox{
-      position: relative; /* ✅ so fake button can move inside this box */
       width: min(760px, 94vw);
       border-radius: 26px;
       padding: 26px 20px;
@@ -205,8 +202,7 @@
       text-align:center;
       color:#fff;
       text-shadow: 0 10px 26px rgba(0,0,0,.45);
-      overflow: hidden; /* ✅ keep moving button inside box */
-      min-height: 240px;
+      overflow: hidden;
     }
     .introTitle{
       font-size: clamp(26px, 4.2vw, 52px);
@@ -222,13 +218,16 @@
       line-height: 1.45;
     }
 
+    /* ✅ Buttons stay side-by-side */
     .introBtns{
+      position: relative;
       display:flex;
       justify-content:center;
+      align-items:center;
       gap: 14px;
-      margin-top: 10px;
-      position: relative;
-      min-height: 70px;
+      flex-wrap: nowrap;
+      min-height: 74px;
+      padding: 6px;
     }
 
     #startBtn{
@@ -239,14 +238,11 @@
       border-radius: 18px;
       font-size: 18px;
     }
-    #startBtn:hover{ transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
 
-    /* ✅ fake button wrapper that will move */
+    /* ✅ Second intro button (the runner) */
     #fakeWrap{
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 0;
+      position: relative;   /* starts as normal flex item (next to YES) */
+      display:inline-block;
     }
     #fakeBtn{
       color:#fff;
@@ -263,20 +259,17 @@
 
   <div class="hearts" id="hearts"></div>
 
-  <!-- INTRO OVERLAY -->
   <div class="introOverlay" id="introOverlay">
     <div class="introBox" id="introBox">
       <div class="introTitle">Dear Miss Altaher (; </div>
-      <p class="introText">
-        I have a tiny question for you… 💖<br/>
-      </p>
+      <p class="introText">I have a tiny question for you… 💖</p>
 
-      <div class="introBtns">
-        <button id="startBtn">Yes Daddy...?</button>
+      <div class="introBtns" id="introBtns">
+        <button id="startBtn">YES 😳💖</button>
 
-        <!-- ✅ NEW: troll button that avoids -->
         <span id="fakeWrap">
-          <button id="fakeBtn">Yes ya 5ara</button>
+          <!-- ✅ Change this label if you want -->
+          <button id="fakeBtn">YES ya shater 😌</button>
         </span>
       </div>
     </div>
@@ -295,10 +288,7 @@
 
     <div class="btnRow" id="btnRow">
       <button id="yesBtn">YES 💖</button>
-
-      <span id="noWrap">
-        <button id="noBtn">NO 🙃</button>
-      </span>
+      <span id="noWrap"><button id="noBtn">NO 🙃</button></span>
     </div>
 
     <div class="message big" id="msgBox"></div>
@@ -336,39 +326,34 @@
       card.classList.remove("locked");
     });
 
-    // ✅ NEW: fake intro button that avoids
-    const introBox = document.getElementById("introBox");
+    // ✅ Intro runner button: stays NEAR (moves only inside the introBtns area)
+    const introBtns = document.getElementById("introBtns");
     const fakeWrap = document.getElementById("fakeWrap");
     const fakeBtn = document.getElementById("fakeBtn");
 
-    function moveFakeButton(){
-      const boxRect = introBox.getBoundingClientRect();
-      const wrapRect = fakeWrap.getBoundingClientRect();
-      const pad = 12;
+    function moveFakeButtonNear(){
+      const area = introBtns.getBoundingClientRect();
+      const wrap = fakeWrap.getBoundingClientRect();
+      const pad = 6;
 
-      // place inside introBox
+      // switch to absolute INSIDE introBtns area
       fakeWrap.style.position = "absolute";
-      fakeWrap.style.transform = ""; // stop center transform once moving
 
-      const maxLeft = Math.max(pad, boxRect.width  - wrapRect.width  - pad);
-      const maxTop  = Math.max(pad, boxRect.height - wrapRect.height - pad);
+      // allowed region = introBtns area, not full page (so it won't go far)
+      const maxLeft = Math.max(pad, area.width  - wrap.width  - pad);
+      const maxTop  = Math.max(pad, area.height - wrap.height - pad);
 
       const left = rand(pad, Math.floor(maxLeft));
-      // keep it in lower half of box so it looks natural
-      const top  = rand(Math.floor(boxRect.height * 0.45), Math.floor(maxTop));
+      const top  = rand(pad, Math.floor(maxTop));
 
       fakeWrap.style.left = left + "px";
       fakeWrap.style.top  = top  + "px";
     }
 
-    // run away on hover/touch/click
-    fakeWrap.addEventListener("mouseenter", moveFakeButton);
-    fakeBtn.addEventListener("mouseenter", moveFakeButton);
-    fakeBtn.addEventListener("touchstart", moveFakeButton, {passive:true});
-    fakeBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      moveFakeButton();
-    });
+    fakeWrap.addEventListener("mouseenter", moveFakeButtonNear);
+    fakeBtn.addEventListener("mouseenter", moveFakeButtonNear);
+    fakeBtn.addEventListener("touchstart", moveFakeButtonNear, {passive:true});
+    fakeBtn.addEventListener("click", (e) => { e.preventDefault(); moveFakeButtonNear(); });
 
     // ===== Main logic =====
     const yesBtn = document.getElementById("yesBtn");
@@ -386,7 +371,7 @@
       msgBox.style.display = "block";
     }
 
-    // ✅ jump anywhere on the SCREEN and never out of bounds
+    // NO button jumps anywhere on screen, always within bounds
     function moveNoButton(){
       const wrapRect = noWrap.getBoundingClientRect();
       const pad = 12;
@@ -396,27 +381,14 @@
       const maxLeft = Math.max(pad, window.innerWidth  - wrapRect.width  - pad);
       const maxTop  = Math.max(pad, window.innerHeight - wrapRect.height - pad);
 
-      const left = rand(pad, Math.floor(maxLeft));
-      const top  = rand(pad, Math.floor(maxTop));
-
-      noWrap.style.left = left + "px";
-      noWrap.style.top  = top  + "px";
+      noWrap.style.left = rand(pad, Math.floor(maxLeft)) + "px";
+      noWrap.style.top  = rand(pad, Math.floor(maxTop)) + "px";
     }
 
-    function setAvoidOnHover(){
-      noWrap.addEventListener("mouseenter", () => {
-        if(avoidMode) moveNoButton();
-      });
-      noBtn.addEventListener("mouseenter", () => {
-        if(avoidMode) moveNoButton();
-      });
-      noBtn.addEventListener("touchstart", () => {
-        if(avoidMode) moveNoButton();
-      }, {passive:true});
-    }
-    setAvoidOnHover();
+    noWrap.addEventListener("mouseenter", () => { if(avoidMode) moveNoButton(); });
+    noBtn.addEventListener("mouseenter", () => { if(avoidMode) moveNoButton(); });
+    noBtn.addEventListener("touchstart", () => { if(avoidMode) moveNoButton(); }, {passive:true});
 
-    // NO click behavior
     noBtn.addEventListener("click", () => {
       noClicks++;
 
@@ -434,9 +406,7 @@
         avoidMode = true;
         showMessage(`
           <div style="font-size:22px; font-weight:900;">just say you hate me</div>
-          <div style="margin-top:10px; opacity:.95;">
-            .....💞
-          </div>
+          <div style="margin-top:10px; opacity:.95;">Try again… if you can 😈💞</div>
         `);
         moveNoButton();
       }
@@ -456,11 +426,9 @@
       }
     });
 
-    // YES click behavior
     yesBtn.addEventListener("click", () => {
       avoidMode = false;
 
-      // reset NO position cleanly
       noWrap.style.position = "relative";
       noWrap.style.left = "";
       noWrap.style.top = "";
@@ -468,31 +436,22 @@
       noWrap.classList.add("hidden");
       yesBtn.disabled = true;
       yesBtn.style.filter = "grayscale(.1) brightness(1.1)";
-      card.classList.add("successGlow");
+      document.getElementById("card").classList.add("successGlow");
 
       title.innerHTML = "SUIIIIIIIIIIII 💘💘💘";
       sub.innerHTML = "I lovee you soo much princess 👑💖";
 
       showMessage(`
-        <div style="font-size:28px; font-weight:1000;">
-          YOU'RE MY VALENTINE EVERY DAY 🩷🩷🩷🩷🩷
-        </div>
-        <div style="margin-top:12px; font-size:20px; font-weight:800;">
-          💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
-        </div>
+        <div style="font-size:28px; font-weight:1000;">YOU'RE MY VALENTINE EVERY DAY 🩷🩷🩷🩷🩷</div>
+        <div style="margin-top:12px; font-size:20px; font-weight:800;">💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨</div>
         <div style="margin-top:12px; opacity:.95; font-size:18px; line-height:1.4;">
-          You are my everything <br/>
-          I choose you today, tomorrow, and always....Maybe HAHAHA jk
+          You are my everything <br/> I choose you today, tomorrow, and always 💞
         </div>
-        <div style="margin-top:12px; font-size:20px; font-weight:900;">
-          💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨
-        </div>
+        <div style="margin-top:12px; font-size:20px; font-weight:900;">💗💖💘💕💞💝❤️🩷✨ 💗💖💘💕💞💝❤️🩷✨</div>
       `);
     });
 
-    window.addEventListener("resize", () => {
-      if(avoidMode) moveNoButton();
-    });
+    window.addEventListener("resize", () => { if(avoidMode) moveNoButton(); });
   </script>
 </body>
 </html>
