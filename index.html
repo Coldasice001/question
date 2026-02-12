@@ -319,12 +319,12 @@
     for(let i=0;i<18;i++) spawnHeart();
     setInterval(spawnHeart, 550);
 
-    // ===== Helpers =====
+   
     function rand(min, max){
       return Math.floor(Math.random()*(max-min+1))+min;
     }
 
-    // ===== Intro logic =====
+
     const introOverlay = document.getElementById("introOverlay");
     const startBtn = document.getElementById("startBtn");
     const card = document.getElementById("card");
@@ -334,7 +334,7 @@
       card.classList.remove("locked");
     });
 
-    // ===== Intro IDC dodge logic (avoids immediately) =====
+  
     const idcWrap = document.getElementById("idcWrap");
     const idcBtn  = document.getElementById("idcBtn");
 
@@ -356,7 +356,7 @@
     idcBtn.addEventListener("touchstart", () => moveIDCButton(), {passive:true});
     idcBtn.addEventListener("click", (e) => { e.preventDefault(); moveIDCButton(); });
 
-    // ===== Main logic =====
+  
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const noWrap = document.getElementById("noWrap");
@@ -365,39 +365,38 @@
     const sub = document.getElementById("sub");
 
     let noClicks = 0;
-    let avoidMode = false; // when true, NO avoids on hover/touch
+    let avoidMode = false; 
 
     function showMessage(html){
       msgBox.innerHTML = html;
       msgBox.style.display = "block";
     }
 
-    // Move NO anywhere on screen
+ 
     function moveNoButton(){
   const wrapRect = noWrap.getBoundingClientRect();
   const pad = 12;
 
-  // If not already fixed, lock it in place first
+  
   if (noWrap.style.position !== "fixed") {
     noWrap.style.position = "fixed";
     noWrap.style.left = wrapRect.left + "px";
     noWrap.style.top  = wrapRect.top  + "px";
   }
 
-  // Current position
+  
   const currentLeft = parseFloat(noWrap.style.left);
   const currentTop  = parseFloat(noWrap.style.top);
 
-  // Small jump range (adjust if you want more/less movement)
+
   const maxStep = 110; 
   const dx = (Math.random() * maxStep * 2) - maxStep; // -100 to +100
   const dy = (Math.random() * maxStep * 2) - maxStep;
 
-  // Screen limits
   const maxLeft = window.innerWidth  - wrapRect.width  - pad;
   const maxTop  = window.innerHeight - wrapRect.height - pad;
 
-  // Clamp inside bounds
+ 
   let newLeft = currentLeft + dx;
   let newTop  = currentTop + dy;
 
@@ -409,7 +408,7 @@
 }
 
 
-    // ✅ Avoid only when avoidMode is ON (we will turn it ON later)
+   
     function setAvoidOnHover(){
       noWrap.addEventListener("mouseenter", () => {
         if(avoidMode) moveNoButton();
@@ -423,10 +422,7 @@
     }
     setAvoidOnHover();
 
-    // ✅ NEW BEHAVIOR:
-    // 1st click -> "oh" (no move)
-    // 2nd click -> "just say you hate me" (NO STILL DOES NOT MOVE)
-    // 3rd time trying -> avoid starts (it will jump away like the intro IDC)
+  
     noBtn.addEventListener("click", () => {
       noClicks++;
 
@@ -442,7 +438,7 @@
       }
 
       if(noClicks === 2){
-        // ✅ show message but DO NOT enable avoid and DO NOT move
+       
         showMessage(`
           <div style="font-size:22px; font-weight:900;">....</div>
           <div style="margin-top:10px; opacity:.95;">
@@ -452,7 +448,7 @@
         return;
       }
 
-      // ✅ from 3rd click onward: start avoiding (and jump immediately too)
+    
       avoidMode = true;
 
       showMessage(`
@@ -460,15 +456,15 @@
         <div style="margin-top:10px; opacity:.95;">how does your attitude feel😆? I DARE YOU TO CLICK NO AGAIN😇😈</div>
       `);
 
-      // jump away immediately after they manage to click it
+      
       moveNoButton();
     });
 
-    // YES click
+ 
     yesBtn.addEventListener("click", () => {
       avoidMode = false;
 
-      // bring NO back into the row
+    
       noWrap.style.position = "relative";
       noWrap.style.left = "";
       noWrap.style.top = "";
