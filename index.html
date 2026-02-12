@@ -1,43 +1,238 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Interactive Page</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        #valentineLogic { font-size: 24px; margin: 20px; }
-        #noButton, #yesButton { padding: 10px 20px; font-size: 20px; cursor: pointer; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valentine 💘</title>
+
+  <style>
+    :root{
+      --bg1:#ffd1dc;
+      --bg2:#fff4f7;
+      --card:#ffffffcc;
+      --border:#ff8fb1;
+      --text:#1f1f1f;
+      --yes:#ff3b7a;
+      --yes2:#ff5f93;
+      --no:#f2f2f2;
+      --shadow: 0 18px 45px rgba(0,0,0,.12);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, #fff, transparent 45%),
+        radial-gradient(circle at 80% 0%, #fff, transparent 40%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* floating hearts background */
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      filter: blur(.2px);
+    }
+    .hearts span{
+      position:absolute;
+      font-size: clamp(16px, 2vw, 28px);
+      animation: floatUp linear infinite;
+      bottom:-10vh;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      to{ transform: translateY(-120vh) rotate(360deg); opacity:0; }
+    }
+
+    .card{
+      width:min(620px, 92vw);
+      padding:28px 22px;
+      background:var(--card);
+      border:1px solid color-mix(in oklab, var(--border) 70%, white);
+      border-radius:20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      text-align:center;
+      position:relative;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(28px, 4.6vw, 44px);
+      letter-spacing:.2px;
+    }
+    p{
+      margin:0 0 18px;
+      opacity:.9;
+      font-size: 16px;
+    }
+
+    .stage{
+      position:relative;
+      height:140px;         /* space for the runaway button */
+      display:grid;
+      place-items:center;
+      margin-top:8px;
+    }
+
+    .btns{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:2;
+    }
+
+    button{
+      border:0;
+      border-radius:14px;
+      padding:12px 18px;
+      font-size:18px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+
+    #yesButton{
+      color:white;
+      background: linear-gradient(135deg, var(--yes), var(--yes2));
+      box-shadow: 0 10px 22px rgba(255,59,122,.28);
+    }
+    #yesButton:hover{
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow: 0 14px 28px rgba(255,59,122,.35);
+    }
+
+    #noButton{
+      background: var(--no);
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
+      position:absolute;   /* we will move it inside .stage */
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%);
+    }
+    #noButton:hover{
+      transform: translate(-50%, -52%) scale(1.02);
+    }
+
+    /* toast */
+    .toast{
+      position:absolute;
+      left:50%;
+      top:16px;
+      transform: translateX(-50%);
+      background: rgba(20,20,20,.84);
+      color:white;
+      padding:10px 14px;
+      border-radius: 999px;
+      font-size:14px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      max-width: 92%;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(2px);
+    }
+
+    /* little result text */
+    .result{
+      margin-top:10px;
+      min-height: 24px;
+      font-size: 14px;
+      opacity:.75;
+    }
+
+    /* confetti hearts */
+    .confetti{
+      position:fixed;
+      top:-10vh;
+      pointer-events:none;
+      animation: fall 2.2s linear forwards;
+      will-change: transform, top, opacity;
+    }
+    @keyframes fall{
+      to{
+        top:110vh;
+        opacity:0;
+        transform: translateX(var(--dx)) rotate(var(--rot));
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Valentine's Day</h1>
-    <div id="valentineLogic">
-        <button id="noButton">No</button>
+  <div class="hearts" aria-hidden="true" id="bgHearts"></div>
+
+  <div class="card">
+    <div class="toast" id="toast"></div>
+
+    <h1>Valentine’s Day 💘</h1>
+    <p id="subtitle">Do you want to be my Valentine?</p>
+
+    <div class="stage" id="stage">
+      <div class="btns">
         <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+      </div>
     </div>
 
-    <script>
-        let noClickCount = 0;
-        const noButton = document.getElementById('noButton');
-        const yesButton = document.getElementById('yesButton');
+    <div class="result" id="result"></div>
+  </div>
 
-        noButton.addEventListener('click', function() {
-            noClickCount++;
-            if (noClickCount === 1) {
-                alert('ohhhh 💔💔💔💔💔💔💔');
-            } else if (noClickCount >= 2 && noClickCount <= 3) {
-                noButton.style.position = 'absolute';
-                noButton.style.top = Math.random() * 100 + '%';
-                noButton.style.left = Math.random() * 100 + '%';
-            } else if (noClickCount === 4) {
-                alert('y3ni ma bthbini?');
-            }
-        });
+  <script>
+    // ======= Customize these texts if you want =======
+    const TEXT = {
+      firstNo: "ohhhh 💔💔💔💔💔💔💔",
+      fourthNo: "y3ni ma bthbini?",
+      yes: "SUIIIIIIII, i love you my princess ❤️"
+    };
 
-        yesButton.addEventListener('click', function() {
-            yesButton.textContent = "SUIIIIIIII, i love you my princess ❤️";
-        });
-    </script>
-</body>
-</html>
+    // ======= Helpers =======
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+
+    function toast(msg){
+      clearTimeout(toastTimer);
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1400);
+    }
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    // Put some floating hearts in the background
+    const bg = document.getElementById("bgHearts");
+    const heartChoices = ["💖","💘","💕","💞","❤️"];
+    for(let i=0;i<18;i++){
+      const s = document.createElement("span");
+      s.textContent = heartChoices[Math.floor(Math.random()*heartChoices.length)];
+      s.style.left = rand(0, 100) + "vw";
+      s.style.animationDuration = rand(6, 14) + "s";
+      s.style.animationDelay = rand(0, 10) + "s";
+      s.style.opacity = rand(0.15, 0.55);
+      bg.appendChild(s);
+    }
+
+    // ======= Main Logic =======
+    let noClickCount = 0;
+
+    const stage = document.getElementById("stage");
+    const noButton = document.getElementById("noButton");
